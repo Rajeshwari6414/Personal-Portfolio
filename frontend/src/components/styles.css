@@ -1,0 +1,364 @@
+/* src/components/styles.css
+   Single dark theme file with animated background & blobs,
+   consistent variables, card contrast, hero layout, and responsive rules.
+*/
+
+/* ---------------- VARIABLES ---------------- */
+:root{
+  /* overall colors */
+  --page-bg-1: #0b1220;
+  --page-bg-2: #0f1724;
+  --accent-1: #6d4aff;   /* purple */
+  --accent-2: #06b6d4;   /* cyan */
+  --muted-strong: rgba(255,255,255,0.16);
+  --muted: rgba(255,255,255,0.09);
+  --card-bg: rgba(255,255,255,0.03);
+  --card-border-rgba: 255,255,255;
+  --text: #eaf2ff;
+  --text-dim: rgba(234,242,255,0.80);
+  --glass: rgba(255,255,255,0.03);
+  --max-width: 1100px;
+  --radius: 12px;
+  --transition-fast: 180ms;
+}
+
+/* global reset */
+*{box-sizing:border-box}
+html,body,#root{height:100%}
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color:var(--text);
+  background:linear-gradient(180deg,var(--page-bg-1),var(--page-bg-2));
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.45;
+}
+
+/* layout container */
+.container{max-width:var(--max-width);margin:0 auto;padding:0 20px}
+
+/* ================= NAVBAR ================= */
+.navbar{
+  position:sticky; top:0;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px; padding:12px 20px;
+  background: linear-gradient(180deg, rgba(6,7,10,0.22), rgba(6,7,10,0.06));
+  backdrop-filter: blur(6px);
+  z-index:60;
+  border-bottom:1px solid rgba(255,255,255,0.02);
+}
+.logo{font-weight:700; letter-spacing:0.3px; color:var(--text)}
+.nav-links{display:flex; gap:18px; align-items:center; margin:0; padding:0; list-style:none}
+.nav-links a{color:var(--text-dim); font-weight:600; transition: color var(--transition-fast)}
+.nav-links a:hover{color:var(--text)}
+.theme-btn{background:transparent;border:0;color:var(--text-dim);cursor:pointer;font-size:18px;padding:6px}
+
+/* ================= HERO ================= */
+/* top-level wrapper used for dark animated background */
+.app-dark{
+  position:relative;
+  min-height:100vh;
+  overflow-x:hidden;
+  z-index:0;
+  padding-bottom:48px;
+  /* gradient + slow drift */
+  background: linear-gradient(180deg,var(--page-bg-1), var(--page-bg-2));
+  background-size: 400% 400%;
+  animation: bgShift 16s linear infinite;
+}
+
+/* gradient movement */
+@keyframes bgShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* faint overlay stripes for depth */
+.app-dark::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image: linear-gradient(90deg, rgba(255,255,255,0.01) 0 10%, transparent 12%);
+  mix-blend-mode: overlay;
+  pointer-events:none; z-index:0;
+}
+
+/* large hero area */
+.hero{
+  position:relative;
+  z-index:10; /* sit above blobs */
+  min-height:78vh;
+  display:flex; align-items:center; justify-content:center;
+  padding:56px 20px;
+  box-sizing:border-box;
+}
+
+/* inner hero layout (two-column feel, but centered) */
+.hero-inner{
+  width:100%;
+  max-width:1200px;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:32px;
+  box-sizing:border-box;
+}
+
+/* left: vertical large name + subtitle */
+.hero-left{
+  flex:1 1 60%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center;
+  padding:12px;
+}
+
+/* large vertical name style (centered) */
+.hero-name{
+  font-size:64px;
+  line-height:0.92;
+  margin:0;
+  font-weight:800;
+  letter-spacing:-1px;
+  color:var(--text);
+  transform-origin:center;
+}
+
+/* subtitle small muted */
+.hero-sub{
+  margin:8px 0 0;
+  font-size:14px;
+  color:var(--text-dim);
+  opacity:0.95;
+}
+
+/* CTA area under name */
+.hero-cta{
+  margin-top:18px;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* primary button */
+.btn.primary{
+  display:inline-block; padding:12px 20px; border-radius:12px;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  color:white; text-decoration:none; font-weight:700;
+  box-shadow: 0 12px 32px rgba(8,12,24,0.56);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.btn.primary:hover{ transform: translateY(-6px); box-shadow: 0 22px 50px rgba(8,12,24,0.72) }
+
+/* make sure hero text not huge on small */
+@media (max-width:900px){
+  .hero-inner{ flex-direction:column; gap:18px; text-align:center }
+  .hero-name{ font-size:44px }
+  .hero-sub{ max-width:520px }
+  .nav-links{ display:none } /* mobile nav hidden (add a burger later) */
+}
+@media (max-width:480px){
+  .hero-name{ font-size:34px }
+  .btn.primary{ padding:10px 16px; border-radius:10px }
+}
+
+/* ================= SECTIONS & CARDS ================= */
+.section{ padding:72px 0; position:relative; z-index:5; }
+.section h2{ font-size:1.6rem; margin:0 0 18px; color:var(--text) }
+
+/* projects grid */
+.projects-section{ padding:64px 20px }
+.projects-grid{ display:grid; gap:20px; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); }
+
+/* project card default (dark) */
+.project-card{
+  background: var(--card-bg);
+  border: 1px solid rgba(var(--card-border-rgba),0.06);
+  color: var(--text);
+  padding:18px; border-radius:var(--radius);
+  box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+  transform: translateY(12px);
+  opacity:0;
+  transition: transform .28s cubic-bezier(.2,.9,.25,1), opacity .42s ease, box-shadow .2s ease;
+  will-change: transform, opacity;
+  z-index:5;
+}
+
+/* revealed class from JS (or using CSS var animation) */
+.project-card.revealed{ transform: translateY(0); opacity:1 }
+
+/* simple CSS-only stagger fallback — uses custom property --i set on card elements in JSX */
+.project-card{ animation: revealUp .42s ease var(--i,0s) forwards }
+@keyframes revealUp {
+  from { transform: translateY(20px); opacity:0 }
+  to   { transform: translateY(0);  opacity:1 }
+}
+
+/* hover */
+.project-card:hover{ transform: translateY(-8px) scale(1.02); box-shadow: 0 28px 60px rgba(3,6,30,0.72) }
+
+/* card content */
+.project-card h3{ margin:0 0 8px; color:#fff; font-size:1.05rem }
+.project-card p{ margin:0; color: rgba(234,242,255,0.78); font-size:.95rem }
+.tech-tag{ display:inline-block; padding:6px 8px; border-radius:8px; background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.78); font-size:.78rem; margin-right:8px; margin-top:10px }
+
+/* contact form */
+.contact-form{ display:grid; gap:10px; max-width:600px }
+.input, textarea {
+  padding:12px; border-radius:10px; background: rgba(255,255,255,0.02);
+  color:var(--text); border:1px solid rgba(255,255,255,0.04);
+}
+textarea{ min-height:120px; resize:vertical }
+
+/* footer */
+.footer{ padding:28px 20px; text-align:center; color:var(--text-dim); border-top:1px solid rgba(255,255,255,0.02) }
+
+/* small screens tweak */
+@media (max-width:760px){
+  .projects-section{ padding:28px 14px }
+  .projects-grid{ grid-template-columns: 1fr; }
+}
+
+/* ================= BLOBS (animated background shapes) ================= */
+.app-dark .blob{ position:absolute; filter: blur(32px) saturate(130%); opacity:0.22; pointer-events:none; z-index:0; transform-origin:center; animation: floaty 14s ease-in-out infinite; }
+.blob.b1{ width:420px; height:420px; left:-120px; top:-80px; border-radius:50%; background: radial-gradient(circle at 30% 30%, rgba(109,74,255,0.95), transparent 40%); animation-duration:18s; }
+.blob.b2{ width:360px; height:360px; right:-120px; top:40%; border-radius:50%; background: radial-gradient(circle at 70% 60%, rgba(6,182,212,0.9), transparent 45%); animation-duration:20s; }
+.blob.b3{ width:240px; height:240px; left:50%; bottom:-80px; transform:translateX(-30%); border-radius:50%; background: radial-gradient(circle at 50% 50%, rgba(125,70,255,0.85), transparent 50%); animation-duration:22s; }
+
+@keyframes floaty {
+  0% { transform: translateY(0) scale(1) rotate(0deg); }
+  50% { transform: translateY(-22px) scale(1.03) rotate(2deg); }
+  100% { transform: translateY(0) scale(1) rotate(0deg); }
+}
+
+/* hide big blobs on small */
+@media (max-width:760px){
+  .blob.b1, .blob.b2 { display:none; }
+  .blob.b3 { opacity:0.14; filter: blur(18px) }
+}
+
+/* ================= UTILITY CLASSES ================= */
+.badge { display:inline-block; padding:6px 10px; border-radius:999px; font-weight:700; font-size:12px }
+.center { text-align:center }
+
+/* ================= ACCESSIBILITY HINTS ================= */
+/* make links readable */
+a, a:visited { color: var(--accent-2); }
+a:focus, a:hover { outline: none; text-decoration:underline; }
+
+/* ---------------- end of file ---------------- */
+/* Fix section titles (About, Skills, Projects, etc.) */
+h2 {
+  color: #ffffff !important;
+}
+
+/* Fix paragraph text inside dark sections */
+p {
+  color: #e6e6e6 !important;
+}
+
+/* Fix labels if needed */
+label {
+  color: #ffffff !important;
+}
+
+/* Fix list items */
+li {
+  color: #ffffff !important;
+}
+.download-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 10px;
+  transition: 0.3s ease;
+}
+
+.download-btn:hover {
+  background: #0056b3;
+}
+.resume-section {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 2rem;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.resume-actions {
+  margin-top: 10px;
+}
+
+.btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #007bff;
+  color: white;
+  font-weight: 600;
+}
+
+.preview-btn {
+  background: #00a8ff;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.modal {
+  width: 90%;
+  max-width: 900px;
+  height: 85vh;
+  background: #111;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header, .modal-footer {
+  padding: 10px 16px;
+  background: #181818;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-body {
+  flex: 1;
+  background: #000;
+}
+
+.close-btn {
+  background: transparent;
+  color: white;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.pdf-embed {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.secondary {
+  background: #444;
+}
+.download-btn {
+  background: #28a745;
+  margin-left: 10px;
+}
